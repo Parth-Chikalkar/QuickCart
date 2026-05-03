@@ -1,14 +1,14 @@
 package Models;
 
 public class User {
-    private int u_id;
+
     private String name ;
     private String password ;
     private String email ;
     private String role ;
 
     public User(int u_id , String name , String password , String email , String role ){
-        this.u_id = u_id;
+
         this.name = name;
         this.password = password;
         this.email = email;
@@ -23,5 +23,8 @@ public class User {
     }
     public String getRole (){
         return this.role;
+    }
+    public void setRole (String role){
+        this.role = role;
     }
 }

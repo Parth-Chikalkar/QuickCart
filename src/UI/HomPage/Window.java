@@ -19,11 +19,26 @@ public class Window extends JFrame {
                 JOptionPane.showMessageDialog(null, "Invalid credentials");
             }
             else{
-                System.out.println(user.getRole());
+                String role = user.getRole();
+                if(role.equals("USER")) showUserPanel();
+                else showAdminPane();
             }
         });
-        this.add(log);
+
 
         this.setVisible(true);
+        this.setContentPane(log);
+    }
+    private void showAdminPane(){
+        Admin admin = new Admin();
+        this.setContentPane(admin);
+        this.revalidate();
+    }
+    private void showUserPanel(){
+        JPanel panel = new JPanel();
+        JLabel labl = new JLabel("Hello Parth");
+        panel.add(labl);
+        this.setContentPane(panel);
+        this.revalidate();
     }
 }
