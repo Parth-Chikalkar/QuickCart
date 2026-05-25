@@ -68,4 +68,30 @@ public class ProductController {
         }
 
     }
+
+    public boolean updateProduct(Product pro){
+        int id = pro.getStock();
+        int price = pro.getPrice();
+        String title = pro.getName();
+        String description = pro.getDescription();
+
+        String query = "UPDATE PRODUCT SET NAME = ? , PRICE = ? , DESCRIPTION = ?  WHERE p_id = ?";
+        try{
+            DBConnect conect = new DBConnect();
+            Connection con = conect.dbCon();
+            PreparedStatement stm = con.prepareStatement(query);
+            stm.setString(1,title);
+            stm.setInt(2,price);
+            stm.setString(3,description);
+            stm.setInt(4,id);
+            stm.executeUpdate();
+            return true;
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
+
+
 }

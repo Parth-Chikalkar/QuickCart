@@ -16,15 +16,14 @@ public class Product {
     public String getName(){
         return this.name;
     }
-    public String getDescription(){
-        return this.description;
-
-    }
+    public String getDescription(){return this.description;}
     public int getPrice(){
         return this.price;
     }
     public int getStock(){
         return this.stock;
     }
+
+
 
 }

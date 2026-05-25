@@ -22,11 +22,11 @@ public class DeleteProductForm extends JPanel {
              ProductController con = new ProductController();
              boolean bool = con.deleteProduct(idVal);
              if(bool){
-                 JOptionPane.showMessageDialog(this, "Product Deleted Sucessfully ");
+                 JOptionPane.showMessageDialog(this, "Product Deleted Sucessfully");
                  id.setText("");
              }
              else{
-                 JOptionPane.showMessageDialog(this, "Failed To DELETE Product ");
+                 JOptionPane.showMessageDialog(this, "Failed To DELETE Product");
              }
         });
     }
