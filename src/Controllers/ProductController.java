@@ -93,5 +93,45 @@ public class ProductController {
         }
     }
 
+    public ArrayList<String> getProductIdAndStockAndPrice(
+            String name){
+
+        String sql =
+                "SELECT p_id, price, stock " +
+                        "FROM PRODUCT " +
+                        "WHERE name = ?";
+
+        ArrayList<String> list = new ArrayList<>();
+
+        try {
+
+            DBConnect connect = new DBConnect();
+
+            Connection con = connect.dbCon();
+
+            PreparedStatement stm = con.prepareStatement(sql);
+
+            stm.setString(1, name);
+
+
+            ResultSet set = stm.executeQuery();
+
+            if (set.next()) {
+
+                list.add(String.valueOf(set.getInt("p_id")));
+                list.add(String.valueOf(set.getInt("price")));
+                list.add(String.valueOf(set.getInt("stock")));
+            }
+
+            con.close();
+        }
+
+        catch (SQLException e) {
+
+            System.out.println(e.getMessage());
+        }
+
+        return list;
+    }
 
 }

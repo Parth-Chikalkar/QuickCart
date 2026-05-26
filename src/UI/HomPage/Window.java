@@ -1,7 +1,10 @@
 package UI.HomPage;
 
+import Controllers.CustomerController;
 import Controllers.UserController;
 import Models.User;
+import UI.CustomerPages.Customer;
+
 import javax.swing.*;
 
 public class Window extends JFrame {
@@ -20,7 +23,10 @@ public class Window extends JFrame {
             }
             else{
                 String role = user.getRole();
-                if(role.equals("USER")) showUserPanel();
+                if(role.equals("USER")){
+int cu_id = new CustomerController().getCustomerId(email);
+                    showUserPanel(cu_id);
+                }
                 else showAdminPane();
             }
         });
@@ -34,11 +40,9 @@ public class Window extends JFrame {
         this.setContentPane(admin);
         this.revalidate();
     }
-    private void showUserPanel(){
-        JPanel panel = new JPanel();
-        JLabel labl = new JLabel("Hello Parth");
-        panel.add(labl);
-        this.setContentPane(panel);
+    private void showUserPanel(int id ){
+        Customer cu= new Customer(id);
+        this.setContentPane(cu);
         this.revalidate();
     }
 }

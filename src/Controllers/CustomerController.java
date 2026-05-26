@@ -118,6 +118,29 @@ public class CustomerController {
         }
     }
 
+    public int getCustomerId(String email){
+        String sql = "SELECT c.cu_id from CUSTOMERS C JOIN USERS U ON C.u_id = U.u_id WHERE U.email = ? ";
+        try{
+            DBConnect connect = new DBConnect();
+            Connection con = connect.dbCon();
+            PreparedStatement srm = con.prepareStatement(sql);
+            srm.setString(1,email);
+            ResultSet set = srm.executeQuery();
+            if(set.next()) {
+                return set.getInt("cu_id");
+            }
+
+
+
+
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+
+        }
+        return -1;
+
+    }
+
 
 
 }
