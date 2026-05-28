@@ -1,15 +1,19 @@
 package Controllers;
 
 import Utils.DBConnect;
+import Utils.HelperFunctions;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import java.sql.*;
+import java.util.List;
 
 public class OrderController {
-    public boolean addOrder(String name ,String description , int quantity ){
-        String sql = "INSERT INTO ORDER_ITEMS (p_id , quantity , price ) values (?,?,?)";
+    public boolean addOrder(String name ,String description , int quantity , int cu_id ){
+
+//Pahila Orders madhe and oid generate krnar ;
+
+        String sql1 = "INSERT INTO ORDERS (cu_id , total) VALUES ( ? ,?) ";
+
+        String sql = "INSERT INTO ORDER_ITEMS (o_id, p_id, quantity , price ) values (?,?,?, ?)";
         ///Product cha stock pn update kr re parth obv
 
         String sql2 = "UPDATE PRODUCT SET STOCK = ? WHERE P_ID = ? ";
@@ -18,46 +22,52 @@ public class OrderController {
 
 
         try{
-            DBConnect connect = new DBConnect();
-            Connection con = connect.dbCon();
-            PreparedStatement stm =con.prepareStatement(sql);
-            ArrayList<String> productData =
-                    new ProductController()
-                            .getProductIdAndStockAndPrice(name);
+            Connection con = new DBConnect().dbCon();
 
-            if(productData.isEmpty()) {
+            PreparedStatement stm = con.prepareStatement(sql1, Statement.RETURN_GENERATED_KEYS);
+            stm.setInt(1,cu_id);
+            // Calculation of total ;
+            HelperFunctions functions = new HelperFunctions();
+            // Retrival of product data
+            List<String > p_data = new ProductController().getProductIdAndStockAndPrice(name);
+            int p_id =  Integer.parseInt(p_data.get(0));
+            int pricePerProduct = Integer.parseInt(p_data.get(1));
+            int stock =  Integer.parseInt(p_data.get(2));
 
-                System.out.println("Product Not Found");
+            // check
+            if(quantity> stock) return false;
 
-                return false;
+            int total = functions.calculateTotal(quantity,pricePerProduct);
+
+            // Insert in tb1 orders
+            stm.setInt(2,total);
+            stm.executeUpdate();
+            ResultSet set = stm.getGeneratedKeys();
+            int oid = -1;
+            if (set.next()){
+                oid = set.getInt(1);
             }
 
-            int p_id = Integer.parseInt(productData.get(0));
+            // Step2 insert into order_items
+            PreparedStatement stm2 = con.prepareStatement(sql);
+            stm2.setInt(1,oid);
+            stm2.setInt(2,p_id);
+            stm2.setInt(3,quantity);
+            stm2.setInt(4,total);
 
-            int price = Integer.parseInt(productData.get(1));
+            stm2.executeUpdate();
 
-            int stock = Integer.parseInt(productData.get(2));
+            // Step3 reduce the stock
 
-            if(quantity>stock) return false;
-
-            int total_Price_Of_Pro = quantity * price;
-
-            stm.setInt(1,p_id);
-            stm.setInt(2,quantity);
-            stm.setInt(3,total_Price_Of_Pro);
-            stm.executeUpdate();
-
-            //Stock update kela
-            PreparedStatement stm1 = con.prepareStatement(sql2);
-            stm1.setInt(1,stock-quantity);
-            stm1.setInt(2,p_id);
-            stm1.executeUpdate();
+            PreparedStatement stm3 = con.prepareStatement(sql2);
+            stm3.setInt(1,stock-quantity);
+            stm3.setInt(2,p_id);
+            stm3.executeUpdate();
 
             return true;
-
-
         }
         catch (SQLException e){
+
             System.out.println(e.getMessage());
             return false;
         }

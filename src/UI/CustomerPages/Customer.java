@@ -111,7 +111,7 @@ public class Customer extends JPanel {
                         table.getValueAt(row, 3).toString();
                      String description = table.getValueAt(row, 2).toString();
 
-                boolean bool = new OrderController().addOrder(productName,description,Integer.parseInt(quantity));
+                boolean bool = new OrderController().addOrder(productName,description,Integer.parseInt(quantity),id);
                 if(bool){
                     JOptionPane.showMessageDialog(null,"Order Place Sucessfully !");
                 }
