@@ -24,7 +24,7 @@ public class Login extends JPanel {
         card.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
 
-        title = new JLabel("QuickCart Login");
+        title = new JLabel("ERP LOGIN");
         title.setFont(new Font("Segoe UI", Font.BOLD, 18));
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
