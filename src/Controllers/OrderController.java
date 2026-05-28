@@ -1,9 +1,13 @@
 package Controllers;
 
+import Models.ViewOrder;
+import UI.HomPage.ViewOrders;
 import Utils.DBConnect;
 import Utils.HelperFunctions;
 
+import javax.xml.xpath.XPathEvaluationResult;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderController {
@@ -70,6 +74,41 @@ public class OrderController {
 
             System.out.println(e.getMessage());
             return false;
+        }
+
+    }
+
+    public ArrayList<ViewOrder> getAllOrder(){
+        String sqlQuery = " SELECT o.O_ID , u.cu_id , s.name as customer , p.name as product , i.quantity , i.price FROM ORDER_ITEMS i JOIN ORDERS o ON i.O_ID = o.O_ID " +
+                "JOIN customers u ON o.cu_id = u.cu_id "+
+                "JOIN USERS s ON s.u_id = u.u_id "+
+                "JOIN PRODUCT p ON i.p_id = p.p_id; ";
+
+        try{
+           Connection con = new DBConnect().dbCon();
+           PreparedStatement stm = con.prepareStatement(sqlQuery);
+           ResultSet set = stm.executeQuery();
+            ArrayList<ViewOrder> list = new ArrayList<>();
+
+            while (set.next()){
+                list.add(new ViewOrder(
+                        set.getInt("O_ID"),
+                        set.getString("customer"),
+                        set.getString("product"),
+                        set.getInt("quantity"),
+                        set.getInt("price"),
+                        set.getInt("cu_id")
+                ));
+
+
+
+            }
+            return list;
+        }
+        catch (SQLException e){
+            System.out.println(e.getMessage());
+            return null;
+
         }
 
     }
